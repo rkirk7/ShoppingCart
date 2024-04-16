@@ -22,7 +22,6 @@ const useDataApi = (initialUrl, initialData) => {
     isError: false,
     data: initialData,
   });
-  console.log(`useDataApi called`);
   useEffect(() => {
     console.log("useEffect Called");
     let didCancel = false;
@@ -30,7 +29,6 @@ const useDataApi = (initialUrl, initialData) => {
       dispatch({ type: "FETCH_INIT" });
       try {
         const result = await axios(url);
-        console.log("FETCH FROM URl");
         if (!didCancel) {
           dispatch({ type: "FETCH_SUCCESS", payload: result.data });
         }
@@ -44,7 +42,8 @@ const useDataApi = (initialUrl, initialData) => {
     return () => {
       didCancel = true;
     };
-  }, [url]);
+  }, []);
+
   return [state, setUrl];
 };
 const dataFetchReducer = (state, action) => {
@@ -98,11 +97,12 @@ const Products = (props) => {
   );
 
   // Fetch Data
-  const addToCart = (e) => {
-    let name = e.target.name;
+  const addToCart = (name) => {
     let item = items.filter((item) => item.name == name);
+    if (item.length > 0) {
     if (item[0].instock === 0) return;
     item[0].instock -= 1;
+    }
     setCart([...cart, ...item]);
 
   };
@@ -123,7 +123,7 @@ const Products = (props) => {
         <Button variant="primary" size="large">
           {item.name}: ${item.cost}, stock: {item.instock}
         </Button>
-        <input name={item.name} type="submit" onClick={addToCart}></input>
+        <button onClick={() => addToCart(item.name)}>Add to Cart</button>
       </li>
     );
   });
@@ -132,7 +132,9 @@ const Products = (props) => {
     let thisCartItem = cart.filter((theCart) => theCart.name === cartItem.name);
     let count = thisCartItem.length;
     let thisItem = items.filter((item) => item.name === cartItem.name); 
-    thisItem[0].cartstock = count;
+    if (thisItem.length > 0) {
+    thisItem[0].cartstock = count
+    };
   })
   let cartList = cart.map((item, index) => {
     return (

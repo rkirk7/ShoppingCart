@@ -4,7 +4,8 @@
   "info": {
     "singularName": "product",
     "pluralName": "products",
-    "displayName": "Product"
+    "displayName": "Product",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -21,6 +22,9 @@
       "type": "integer"
     },
     "instock": {
+      "type": "integer"
+    },
+    "cartstock": {
       "type": "integer"
     }
   }
