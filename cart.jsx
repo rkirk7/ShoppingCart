@@ -1,15 +1,14 @@
 // simulate getting products from DataBase
 const products = [
-  { name: "Apples_:", country: "Italy", cost: 3, instock: 10 },
-  { name: "Oranges:", country: "Spain", cost: 4, instock: 3 },
-  { name: "Beans__:", country: "USA", cost: 2, instock: 5 },
-  { name: "Cabbage:", country: "USA", cost: 1, instock: 8 },
+  { name: "Apples", country: "Italy", cost: 3, instock: 10, cartstock: 0 },
+  { name: "Oranges", country: "Spain", cost: 4, instock: 3, cartstock: 0 },
+  { name: "Beans", country: "USA", cost: 2, instock: 5, cartstock: 0 },
+  { name: "Cabbage", country: "USA", cost: 1, instock: 8, cartstock: 0 },
 ];
 //=========Cart=============
 const Cart = (props) => {
   const { Card, Accordion, Button } = ReactBootstrap;
   let data = props.location.data ? props.location.data : products;
-  console.log(`data:${JSON.stringify(data)}`);
 
   return <Accordion defaultActiveKey="0">{list}</Accordion>;
 };
@@ -97,43 +96,51 @@ const Products = (props) => {
       data: [],
     }
   );
-  console.log(`Rendering Products ${JSON.stringify(data)}`);
+
   // Fetch Data
   const addToCart = (e) => {
     let name = e.target.name;
     let item = items.filter((item) => item.name == name);
-    console.log(`add to Cart ${JSON.stringify(item)}`);
+    if (item[0].instock === 0) return;
+    item[0].instock -= 1;
     setCart([...cart, ...item]);
-    //doFetch(query);
+
   };
   const deleteCartItem = (index) => {
+    let theItem = cart.filter((item, i) => index == i);
+    theItem[0].instock += 1;
     let newCart = cart.filter((item, i) => index != i);
     setCart(newCart);
   };
-  const photos = ["apple.png", "orange.png", "beans.png", "cabbage.png"];
 
   let list = items.map((item, index) => {
-    //let n = index + 1049;
-    //let url = "https://picsum.photos/id/" + n + "/50/50";
+    let n = index + 1049;
+    let url = "https://picsum.photos/id/" + n + "/50/50";
 
     return (
       <li key={index}>
-        <Image src={photos[index % 4]} width={70} roundedCircle></Image>
+        <Image src={url} width={70} roundedCircle></Image>
         <Button variant="primary" size="large">
-          {item.name}:{item.cost}
+          {item.name}: ${item.cost}, stock: {item.instock}
         </Button>
         <input name={item.name} type="submit" onClick={addToCart}></input>
       </li>
     );
   });
+
+  cart.forEach((cartItem) => {
+    let thisCartItem = cart.filter((theCart) => theCart.name === cartItem.name);
+    let count = thisCartItem.length;
+    let thisItem = items.filter((item) => item.name === cartItem.name); 
+    thisItem[0].cartstock = count;
+  })
   let cartList = cart.map((item, index) => {
     return (
-      <Accordion.Item key={1+index} eventKey={1 + index}>
+      <Accordion.Item key={1+index}>
       <Accordion.Header>
         {item.name}
       </Accordion.Header>
-      <Accordion.Body onClick={() => deleteCartItem(index)}
-        eventKey={1 + index}>
+      <Accordion.Body onClick={() => deleteCartItem(index)}>
         $ {item.cost} from {item.country}
       </Accordion.Body>
     </Accordion.Item>
@@ -142,10 +149,24 @@ const Products = (props) => {
 
   let finalList = () => {
     let total = checkOut();
-    let final = cart.map((item, index) => {
+    let checkoutCart = [];
+    cart.forEach((cartItem) => {
+      let match = false;
+      if (checkoutCart.length === 0) {
+        checkoutCart.push(cartItem);
+      } else {
+      checkoutCart.forEach((checkoutItem) => {
+        if (checkoutItem.name === cartItem.name) {
+          match = true;
+        }
+      });
+      if (!match) checkoutCart.push(cartItem);
+    }
+    });
+    let final = checkoutCart.map((item, index) => {
       return (
         <div key={index} index={index}>
-          {item.name}
+          {item.name}, in cart: {item.cartstock}
         </div>
       );
     });
@@ -156,17 +177,25 @@ const Products = (props) => {
     let costs = cart.map((item) => item.cost);
     const reducer = (accum, current) => accum + current;
     let newTotal = costs.reduce(reducer, 0);
-    console.log(`total updated to ${newTotal}`);
     return newTotal;
   };
-  // TODO: implement the restockProducts function
+
   const restockProducts = (url) => {
     doFetch(url);
-    let newList = data.data.map((item) =>{
-      console.log(`item: ${JSON.stringify(item)}`);
-      let { attributes: {name, country, cost, instock} } = item;
-      return {name, country, cost, instock };
-     });
+    let newList = [];
+    data.data.forEach((newItem) => {
+      let match = false;
+      let { attributes: {name, country, cost, instock} } = newItem;
+      items.forEach((item) => {
+        if (name === item.name) {
+          item.instock += instock;
+          match = true;
+        } 
+      });
+      if (!match) {
+        newList.push({ name, country, cost, instock });
+      }
+    });
     setItems([...items, ...newList]);
   };
 
