@@ -1,91 +1,25 @@
-// simulate getting products from DataBase
-const products = [
-  { name: "Apples", country: "Italy", cost: 3, instock: 10, cartstock: 0 },
-  { name: "Oranges", country: "Spain", cost: 4, instock: 3, cartstock: 0 },
-  { name: "Beans", country: "USA", cost: 2, instock: 5, cartstock: 0 },
-  { name: "Cabbage", country: "USA", cost: 1, instock: 8, cartstock: 0 },
-];
-//=========Cart=============
-const Cart = (props) => {
-  const { Card, Accordion, Button } = ReactBootstrap;
-  let data = props.location.data ? props.location.data : products;
+import logo from './logo.svg';
+import './App.css';
+import { Products } from './Components/Products';
+import { useDataApi } from './Components/UseDataApi';
+import { Cart } from './Components/Cart';
+import React from 'react';
+import {
+  Card,
+  Accordion,
+  Button,
+  Container,
+  Row,
+  Col,
+  Image,
+  Input,
+} from 'react-bootstrap';
 
-  return <Accordion defaultActiveKey="0">{list}</Accordion>;
-};
-
-const useDataApi = (initialUrl, initialData) => {
-  const { useState, useEffect, useReducer } = React;
-  const [url, setUrl] = useState(initialUrl);
-
-  const [state, dispatch] = useReducer(dataFetchReducer, {
-    isLoading: false,
-    isError: false,
-    data: initialData,
-  });
-  useEffect(() => {
-    console.log("useEffect Called");
-    let didCancel = false;
-    const fetchData = async () => {
-      dispatch({ type: "FETCH_INIT" });
-      try {
-        const result = await axios(url);
-        if (!didCancel) {
-          dispatch({ type: "FETCH_SUCCESS", payload: result.data });
-        }
-      } catch (error) {
-        if (!didCancel) {
-          dispatch({ type: "FETCH_FAILURE" });
-        }
-      }
-    };
-    fetchData();
-    return () => {
-      didCancel = true;
-    };
-  }, []);
-
-  return [state, setUrl];
-};
-const dataFetchReducer = (state, action) => {
-  switch (action.type) {
-    case "FETCH_INIT":
-      return {
-        ...state,
-        isLoading: true,
-        isError: false,
-      };
-    case "FETCH_SUCCESS":
-      return {
-        ...state,
-        isLoading: false,
-        isError: false,
-        data: action.payload,
-      };
-    case "FETCH_FAILURE":
-      return {
-        ...state,
-        isLoading: false,
-        isError: true,
-      };
-    default:
-      throw new Error();
-  }
-};
-
-const Products = (props) => {
-  const [items, setItems] = React.useState(products);
+function App() {
+  const [items, setItems] = React.useState(Products);
   const [cart, setCart] = React.useState([]);
   const [total, setTotal] = React.useState(0);
-  const {
-    Card,
-    Accordion,
-    Button,
-    Container,
-    Row,
-    Col,
-    Image,
-    Input,
-  } = ReactBootstrap;
+ 
   //  Fetch Data
   const { Fragment, useState, useEffect, useReducer } = React;
   const [query, setQuery] = useState("http://localhost:1337/api/products");
@@ -237,5 +171,5 @@ const Products = (props) => {
     </Container>
   );
 };
-// ========================================
-ReactDOM.render(<Products />, document.getElementById("root"));
+
+export default App;
