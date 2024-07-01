@@ -14,7 +14,6 @@ import {
 function App() {
   const [items, setItems] = React.useState(Products);
   const [cart, setCart] = React.useState([]);
-  const [total, setTotal] = React.useState(0);
  
   //  Fetch Data
   const { useState } = React;
@@ -28,7 +27,7 @@ function App() {
 
   // Fetch Data
   const addToCart = (name) => {
-    let item = items.filter((item) => item.name == name);
+    let item = items.filter((item) => item.name === name);
     if (item.length > 0) {
     if (item[0].instock === 0) return;
     item[0].instock -= 1;
@@ -37,7 +36,7 @@ function App() {
 
   };
   const deleteCartItem = (index) => {
-    let theItem = cart.filter((item, i) => index == i);
+    let theItem = cart.filter((item, i) => index === i);
     theItem[0].instock += 1;
     let newCart = cart.filter((item, i) => index !== i);
     setCart(newCart);
