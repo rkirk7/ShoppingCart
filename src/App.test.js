@@ -16,9 +16,10 @@ const mockResponse = {
       data: [
         {
           id: 1,
+          name: 'tuttifrutti',
           attributes: {
             name: 'Apples',
-//            country: 'Italy',
+            country: 'Italy',
             cost: 12,
             instock: 2,
             cartstock: 0
