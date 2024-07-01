@@ -34,7 +34,6 @@ mock.onPost('http://localhost:1337/graphql').reply(200, mockResponse)
 
 render(<App />);
 await waitFor(() => {
-const appleElement = screen.getByText(/Apples/i);
 const orangeelement = screen.getByText(/Oranges/i);
 });
 });
