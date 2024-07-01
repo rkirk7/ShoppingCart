@@ -36,9 +36,9 @@ function App() {
 
   };
   const deleteCartItem = (index) => {
-    let theItem = cart.filter((item, i) => index === i);
+    let theItem = cart.filter((i) => index === i);
     theItem[0].instock += 1;
-    let newCart = cart.filter((item, i) => index !== i);
+    let newCart = cart.filter((i) => index !== i);
     setCart(newCart);
   };
 
