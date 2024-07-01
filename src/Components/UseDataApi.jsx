@@ -30,7 +30,7 @@ export const useDataApi = (initialUrl, initialData) => {
       return () => {
         didCancel = true;
       };
-    }, []);
+    }, [url]);
   
     return [state, setUrl];
   };
