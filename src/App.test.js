@@ -32,6 +32,6 @@ it("successfully fetches and renders", async () => {
   render(<App />);
   
   await waitFor(() => {
-    const orangeElement = screen.getByText(/OrangesAreNotHere/i);
+    const appleElement = screen.getByText(/Apples/i);
   });
 });
