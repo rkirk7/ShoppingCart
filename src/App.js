@@ -1,18 +1,14 @@
-import logo from './logo.svg';
 import './App.css';
 import { Products } from './Components/Products';
 import { useDataApi } from './Components/UseDataApi';
-import { Cart } from './Components/Cart';
 import React from 'react';
 import {
-  Card,
   Accordion,
   Button,
   Container,
   Row,
   Col,
   Image,
-  Input,
 } from 'react-bootstrap';
 
 function App() {
@@ -21,9 +17,9 @@ function App() {
   const [total, setTotal] = React.useState(0);
  
   //  Fetch Data
-  const { Fragment, useState, useEffect, useReducer } = React;
+  const { useState } = React;
   const [query, setQuery] = useState("http://localhost:1337/api/products");
-  const [{ data, isLoading, isError }, doFetch] = useDataApi(
+  const [{ data }, doFetch] = useDataApi(
     "http://localhost:1337/api/products",
     {
       data: [],
@@ -43,7 +39,7 @@ function App() {
   const deleteCartItem = (index) => {
     let theItem = cart.filter((item, i) => index == i);
     theItem[0].instock += 1;
-    let newCart = cart.filter((item, i) => index != i);
+    let newCart = cart.filter((item, i) => index !== i);
     setCart(newCart);
   };
 
