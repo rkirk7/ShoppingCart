@@ -31,8 +31,7 @@ it("successfully fetches and renders", async () => {
 
   render(<App />);
   
-  // Intentionally wait for an element that we know won't appear
   await waitFor(() => {
-    const orangeElement = screen.getByText(/Oranges/i); // This should fail because 'Oranges' is not in mockResponse
+    const orangeElement = screen.getByText(/OrangesAreNotHere/i);
   });
 });
